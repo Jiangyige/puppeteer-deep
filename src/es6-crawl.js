@@ -1,39 +1,40 @@
 const puppeteer = require('puppeteer');
-var {timeout} = require('../tools/tools.js');
+var {timeout, moment} = require('../tools/tools.js');
 
-puppeteer.launch().then(async browser => {
+const schedule = require('node-schedule');
+
+// 当前时间的秒值为 10 时执行任务，如：2021-7-8 13:25:10
+let job = schedule.scheduleJob('30 * * * * *', () => {
+  console.log('job schedule', new Date());
+
+  puppeteer.launch().then(async browser => {
     let page = await browser.newPage();
 
-    await page.goto('http://es6.ruanyifeng.com/#README');
-    await timeout(2000);
+    await page.goto('https://www.teld.cn');
+    await timeout(3000);
 
-    let aTags = await page.evaluate(() => {
-      let as = [...document.querySelectorAll('ol li a')];
+    console.log('start111');
+    let powerArr = await page.evaluate(() => {
+      let as = [...document.querySelectorAll('#Power p.number')];
+
       return as.map((a) =>{
           return {
-            href: a.href.trim(),
-            name: a.text
+            text: a.textContent
           }
       });
     });
 
-    await page.pdf({path: `./data/es6-pdf/${aTags[0].name}.pdf`});
-    page.close()
+    console.log(powerArr);
 
-    // 这里也可以使用promise all，但cpu可能吃紧，谨慎操作
-    for (var i = 1; i < aTags.length; i++) {
-      page = await browser.newPage()
+    let powerNum = Number(powerArr.map(e => e.text).join(''))
 
-      var a = aTags[i];
+    console.log(moment("Y-M-D h:m:s"), powerNum)
 
-      await page.goto(a.href);
+    await page.close()
 
-      await timeout(2000);
+    await browser.close();
+  });
 
-      await page.pdf({path: `./data/es6-pdf/${a.name}.pdf`});
-
-      page.close();
-    }
-
-    browser.close();
 });
+
+
