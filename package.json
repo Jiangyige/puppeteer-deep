@@ -4,11 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "trd": "pm2 start src/trd.js",
+    "stop": "pm2 stop trd",
     "start": "node src/zhentaoo.js",
     "test": "npm run juejin",
     "sf-juejin": "node src/sf-juejin.js",
     "zhentaoo": "node src/zhentaoo.js",
-    "es6": "rm -rf ./es6-pdf/* && node src/es6-crawl.js",
     "trace": "node src/trace.js",
     "monitor": "node src/monitor/bin/www",
     "shuabi": "node src/shuabi.js",
