@@ -8,10 +8,10 @@ const nodemailer = require('nodemailer');
 
 
 const rule = new schedule.RecurrenceRule();
-// runs at 00:00:00
-rule.hour = 0;
+// runs at 10:00:00
+rule.hour = 10;
 rule.minute = 0;
-// rule.second = 0;
+rule.second = 0;
 rule.tz = 'Asia/Shanghai';
 
 let job = schedule.scheduleJob(rule, () => {
