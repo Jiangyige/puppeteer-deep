@@ -15,8 +15,13 @@ let date = '';
 async function getWebpageData(browser) {
   try {
     const page = await browser.newPage();
-
-    let status = await page.goto('https://www.teld.cn', {timeout: 60 * 1000});
+    /* 
+      - load : consider navigation to be finished when the load event is fired.
+      - domcontentloaded : consider navigation to be finished when the DOMContentLoaded event is fired.
+      - networkidle0 : consider navigation to be finished when there are no more than 0 network connections for at least 500 ms.
+      - networkidle2 : consider navigation to be finished when there are no more than 2 network connections for at least 500 ms.
+     */
+    let status = await page.goto('https://www.teld.cn', {timeout: 60 * 1000, waitUntil: 'networkidle2'});
     await timeout(3000);
 
     console.log('start!');
