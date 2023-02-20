@@ -3,13 +3,12 @@ const {timeout} = require('../tools/tools.js');
 const moment = require('moment');
 
 const schedule = require('node-schedule');
-// const fsPromises = require("fs/promises");
-const fs = require('fs').promises;
+const fsPromises = require("fs/promises");
 const xlsx = require('node-xlsx');
 const nodemailer = require('nodemailer');
 
 
-const sheetPath = 'trd.xlsx';
+const sheetPath = 'trd-test.xlsx';
 
 // 抓取充电量
 async function getWebpageData(browser, date) {
@@ -79,7 +78,7 @@ async function writeSheet(powerNum, date) {
   const buffer = xlsx.build(data);
 
   // 写入文件
-  const err = await fs.writeFile(sheetPath, buffer)
+  const err = await fsPromises.writeFile(sheetPath, buffer)
   if (err) {
     console.log("Write failed: " + err);
     return;
@@ -112,7 +111,7 @@ async function  sendEmail(subjectText) {
       html: '<b>详情看附件</b>', // html body
       // 下面是发送附件，不需要就注释掉
       attachments: [{
-        filename: 'trd.xlsx',
+        filename: 'trd-test.xlsx',
         path: sheetPath
       }]
   };
@@ -131,8 +130,8 @@ async function  sendEmail(subjectText) {
 // 定时任务
 const rule = new schedule.RecurrenceRule();
 // runs at 10:00:00
-rule.hour = 10;
-rule.minute = 0;
+// rule.hour = 10;
+// rule.minute = 0;
 rule.second = 0;
 rule.tz = 'Asia/Shanghai';
 
