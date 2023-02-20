@@ -3,16 +3,16 @@ const {timeout} = require('../tools/tools.js');
 const moment = require('moment');
 
 const schedule = require('node-schedule');
-// const fsPromises = require("fs/promises");
-const fs = require('fs').promises;
+const fsPromises = require("fs/promises");
 const xlsx = require('node-xlsx');
 const nodemailer = require('nodemailer');
 
 
 const sheetPath = 'trd.xlsx';
+let date = '';
 
 // 抓取充电量
-async function getWebpageData(browser, date) {
+async function getWebpageData(browser) {
   try {
     const page = await browser.newPage();
 
@@ -39,12 +39,14 @@ async function getWebpageData(browser, date) {
     return powerNum;
   } catch (error) {
     console.error(error)
-    return 0
+    date = moment().format("YYYY-MM-DD HH:mm:ss")
+    console.log('重试', date)
+    return await getWebpageData(browser)
   }
 }
 
 // 写入xlsx
-async function writeSheet(powerNum, date) {
+async function writeSheet(powerNum) {
   // 先查出历史数据
   const sheets = xlsx.parse(sheetPath);
       
@@ -67,8 +69,8 @@ async function writeSheet(powerNum, date) {
 
   beforeElsxData.push([
     date,
-    powerNum,
-    powerNum - lastRowData[1]
+    powerNum + '',
+    (powerNum - lastRowData[1]) + ''
   ])
 
   const data = [{
@@ -78,7 +80,7 @@ async function writeSheet(powerNum, date) {
   const buffer = xlsx.build(data);
 
   // 写入文件
-  const err = await fs.writeFile(sheetPath, buffer)
+  const err = await fsPromises.writeFile(sheetPath, buffer)
   if (err) {
     console.log("Write failed: " + err);
     return;
@@ -89,7 +91,7 @@ async function writeSheet(powerNum, date) {
 }
 
 // 发送邮件
-async function  sendEmail(subjectText) {
+async function sendEmail(subjectText) {
   // 开启一个 SMTP 连接池
   let transporter = nodemailer.createTransport({
     host: 'smtp.qq.com',
@@ -139,16 +141,21 @@ const job = schedule.scheduleJob(rule, () => {
   console.log('job schedule', new Date().toLocaleString());
 
   puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox']}).then(async browser => {
-    const date = moment().format("YYYY-MM-DD HH:mm:ss")
-    // 抓取充电量
-    const powerNum = await getWebpageData(browser, date);
-    if (!powerNum) return;
+  date = moment().format("YYYY-MM-DD HH:mm:ss")
+  // 抓取充电量
+  const powerNum = await getWebpageData(browser);
+  if (!powerNum) {
+    console.log('抓取充电量失败')
+    return;
+  }
 
-    // 写入xlsx
-    const subjectText = await writeSheet(powerNum, date);
-    
+  // 写入xlsx
+  const subjectText = await writeSheet(powerNum);
+  if (!subjectText) {
+    console.log('写入sheet文件失败')
+    return;
+  }
     // 发送邮件
-    if (!subjectText) return;
     await sendEmail(subjectText);
   });
 }, () => {

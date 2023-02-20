@@ -9,9 +9,10 @@ const nodemailer = require('nodemailer');
 
 
 const sheetPath = 'trd-test.xlsx';
+let date = '';
 
 // 抓取充电量
-async function getWebpageData(browser, date) {
+async function getWebpageData(browser) {
   try {
     const page = await browser.newPage();
 
@@ -38,13 +39,14 @@ async function getWebpageData(browser, date) {
     return powerNum;
   } catch (error) {
     console.error(error)
-    console.log('重试')
-    return await getWebpageData(browser, date)
+    date = moment().format("YYYY-MM-DD HH:mm:ss")
+    console.log('重试', date)
+    return await getWebpageData(browser)
   }
 }
 
 // 写入xlsx
-async function writeSheet(powerNum, date) {
+async function writeSheet(powerNum) {
   // 先查出历史数据
   const sheets = xlsx.parse(sheetPath);
       
@@ -67,8 +69,8 @@ async function writeSheet(powerNum, date) {
 
   beforeElsxData.push([
     date,
-    powerNum,
-    powerNum - lastRowData[1]
+    powerNum + '',
+    (powerNum - lastRowData[1]) + ''
   ])
 
   const data = [{
@@ -89,7 +91,7 @@ async function writeSheet(powerNum, date) {
 }
 
 // 发送邮件
-async function  sendEmail(subjectText) {
+async function sendEmail(subjectText) {
   // 开启一个 SMTP 连接池
   let transporter = nodemailer.createTransport({
     host: 'smtp.qq.com',
@@ -126,19 +128,24 @@ async function  sendEmail(subjectText) {
   });
 }
 
-
 console.log('job schedule', new Date().toLocaleString());
 
 puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox']}).then(async browser => {
-  const date = moment().format("YYYY-MM-DD HH:mm:ss")
+  date = moment().format("YYYY-MM-DD HH:mm:ss")
   // 抓取充电量
-  const powerNum = await getWebpageData(browser, date);
-  if (!powerNum) return;
+  const powerNum = await getWebpageData(browser);
+  if (!powerNum) {
+    console.log('抓取充电量失败')
+    return;
+  }
 
   // 写入xlsx
-  const subjectText = await writeSheet(powerNum, date);
-  
+  const subjectText = await writeSheet(powerNum);
+  if (!subjectText) {
+    console.log('写入sheet文件失败')
+    return;
+  }
+
   // 发送邮件
-  if (!subjectText) return;
   await sendEmail(subjectText);
 });
