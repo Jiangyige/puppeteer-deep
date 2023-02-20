@@ -17,7 +17,6 @@ async function getWebpageData(browser, date) {
     const page = await browser.newPage();
 
     let status = await page.goto('https://www.teld.cn', {timeout: 60 * 1000});
-    console.log(status);
     await timeout(3000);
 
     console.log('start!');
