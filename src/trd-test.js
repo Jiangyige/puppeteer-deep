@@ -38,7 +38,8 @@ async function getWebpageData(browser, date) {
     return powerNum;
   } catch (error) {
     console.error(error)
-    return 0
+    console.log('重试')
+    return await getWebpageData(browser, date)
   }
 }
 
@@ -126,30 +127,18 @@ async function  sendEmail(subjectText) {
 }
 
 
-// 定时任务
-const rule = new schedule.RecurrenceRule();
-// runs at 10:00:00
-// rule.hour = 10;
-// rule.minute = 0;
-rule.second = 0;
-rule.tz = 'Asia/Shanghai';
+console.log('job schedule', new Date().toLocaleString());
 
-const job = schedule.scheduleJob(rule, () => {
-  console.log('job schedule', new Date().toLocaleString());
+puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox']}).then(async browser => {
+  const date = moment().format("YYYY-MM-DD HH:mm:ss")
+  // 抓取充电量
+  const powerNum = await getWebpageData(browser, date);
+  if (!powerNum) return;
 
-  puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox']}).then(async browser => {
-    const date = moment().format("YYYY-MM-DD HH:mm:ss")
-    // 抓取充电量
-    const powerNum = await getWebpageData(browser, date);
-    if (!powerNum) return;
-
-    // 写入xlsx
-    const subjectText = await writeSheet(powerNum, date);
-    
-    // 发送邮件
-    if (!subjectText) return;
-    await sendEmail(subjectText);
-  });
-}, () => {
-  // 定时任务回调函数
+  // 写入xlsx
+  const subjectText = await writeSheet(powerNum, date);
+  
+  // 发送邮件
+  if (!subjectText) return;
+  await sendEmail(subjectText);
 });
