@@ -1,5 +1,5 @@
 {
-  "name": "puppeteer-deep",
+  "name": "trd-up-up-up",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -7,6 +7,7 @@
     "trd": "pm2 start src/trd.js",
     "stop": "pm2 stop trd",
     "start": "node src/trd.js",
+    "now": "node src/trd-now.js",
     "test": "node src/trd-test.js"
   },
   "author": "",

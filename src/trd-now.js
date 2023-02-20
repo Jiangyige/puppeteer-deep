@@ -15,7 +15,6 @@ let date = '';
 async function getWebpageData(browser) {
   try {
     const page = await browser.newPage();
-
     let status = await page.goto('https://www.teld.cn', {timeout: 60 * 3 * 1000});
     await timeout(3000);
 
@@ -110,7 +109,7 @@ async function sendEmail(subjectText) {
       to: 'jiangyige1990@live.com', // 收件人
       subject: subjectText, // 主题
       text: 'TRD' + moment().format('YYYY-MM-DD') + '充电量', // plain text body
-      html: '<b>详情看附件</b>', // html body
+      html: '<b>立即补数据，详情看附件</b>', // html body
       // 下面是发送附件，不需要就注释掉
       attachments: [{
         filename: 'trd.xlsx',
@@ -128,19 +127,9 @@ async function sendEmail(subjectText) {
   });
 }
 
+console.log('job schedule', new Date().toLocaleString());
 
-// 定时任务
-const rule = new schedule.RecurrenceRule();
-// runs at 10:00:00
-rule.hour = 10;
-rule.minute = 0;
-rule.second = 0;
-rule.tz = 'Asia/Shanghai';
-
-const job = schedule.scheduleJob(rule, () => {
-  console.log('job schedule', new Date().toLocaleString());
-
-  puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox']}).then(async browser => {
+puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox']}).then(async browser => {
   date = moment().format("YYYY-MM-DD HH:mm:ss")
   // 抓取充电量
   const powerNum = await getWebpageData(browser);
@@ -155,9 +144,7 @@ const job = schedule.scheduleJob(rule, () => {
     console.log('写入sheet文件失败')
     return;
   }
-    // 发送邮件
-    await sendEmail(subjectText);
-  });
-}, () => {
-  // 定时任务回调函数
+
+  // 发送邮件
+  await sendEmail(subjectText);
 });
