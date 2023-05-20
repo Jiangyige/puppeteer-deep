@@ -15,22 +15,23 @@ let date = '';
 async function getWebpageData(browser) {
   try {
     const page = await browser.newPage();
-
     let status = await page.goto('https://www.teld.cn', {timeout: 60 * 3 * 1000});
     await timeout(3000);
 
     console.log('start!');
     let powerArr = await page.evaluate(() => {
-      let as = [...document.querySelectorAll('#Power p.number')];
+      let as = [...document.querySelectorAll('.one-info:first-child .middle span:last-of-type:not(.space)')];
 
       return as.map((a) =>{
           return {
-            text: a.textContent
+            text: a.innerText
           }
       });
     });
 
-    let powerNum = Number(powerArr.map(e => e.text).join(''))
+    const num = powerArr[0].text.replace(/,/gi, '')
+
+    let powerNum = Number(num)
     console.log(date, powerNum)
 
     await page.close()
