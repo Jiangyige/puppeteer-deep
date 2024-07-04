@@ -16,14 +16,14 @@ async function getWebpageData(browser) {
   try {
     const page = await browser.newPage();
     let status = await page.goto('https://www.teld.cn', {timeout: 60 * 3 * 1000});
-    await timeout(3000);
+    await timeout(5000);
 
     console.log('start!');
     let powerArr = await page.evaluate(() => {
       let as = [...document.querySelectorAll('.one-info:first-child .middle span:last-of-type:not(.space)')];
 
       console.log('as!', as);
-      
+
       return as.map((a) =>{
           return {
             text: a.innerText
