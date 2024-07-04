@@ -22,12 +22,16 @@ async function getWebpageData(browser) {
     let powerArr = await page.evaluate(() => {
       let as = [...document.querySelectorAll('.one-info:first-child .middle span:last-of-type:not(.space)')];
 
+      console.log('as!', as);
+      
       return as.map((a) =>{
           return {
             text: a.innerText
           }
       });
     });
+
+    console.log('powerArr!', powerArr);
 
     const num = powerArr[0].text.replace(/,/gi, '')
 
