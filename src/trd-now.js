@@ -34,7 +34,7 @@ async function getWebpageData(browser) {
     });
 
 
-    let inputElement = await page.$('.one-info:first-child .middle span:last-of-type:not(.space)', ele => ele.innerText);
+    // let inputElement = await page.$('.one-info:first-child .middle span:last-of-type:not(.space)', ele => ele.innerText);
 
     // inputElement = [...inputElement].map((a) => {
     //   return {
@@ -42,7 +42,7 @@ async function getWebpageData(browser) {
     //   }
     // });
 
-    console.log('inputElement!', inputElement);
+    // console.log('inputElement!', inputElement);
 
 
     console.log('powerArr!', powerArr);
