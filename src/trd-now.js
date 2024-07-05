@@ -34,13 +34,13 @@ async function getWebpageData(browser) {
     });
 
 
-    let inputElement = await page.?('.one-info:first-child .middle span:last-of-type:not(.space)');
+    let inputElement = await page.$('.one-info:first-child .middle span:last-of-type:not(.space)', ele => ele.innerText);
 
-    inputElement = [...inputElement].map((a) => {
-      return {
-        text: a.innerText
-      }
-    });
+    // inputElement = [...inputElement].map((a) => {
+    //   return {
+    //     text: a.innerText
+    //   }
+    // });
 
     console.log('inputElement!', inputElement);
 
