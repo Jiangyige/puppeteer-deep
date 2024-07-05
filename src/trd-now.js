@@ -33,6 +33,18 @@ async function getWebpageData(browser) {
       });
     });
 
+
+    let inputElement = await page.?('.one-info:first-child .middle span:last-of-type:not(.space)');
+
+    inputElement = [...inputElement].map((a) => {
+      return {
+        text: a.innerText
+      }
+    });
+
+    console.log('inputElement!', inputElement);
+
+
     console.log('powerArr!', powerArr);
 
     const num = (powerArr && powerArr.length) ? powerArr[0].text.replace(/,/gi, '') : ''
