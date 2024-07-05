@@ -16,6 +16,7 @@ async function getWebpageData(browser) {
   try {
     const page = await browser.newPage();
     let status = await page.goto('https://www.teld.cn', {timeout: 60 * 3 * 1000});
+    console.log('status!', status);
     await timeout(3000);
 
     console.log('start!');
@@ -29,7 +30,7 @@ async function getWebpageData(browser) {
       });
     });
 
-    const num = powerArr[0].text.replace(/,/gi, '')
+    const num = (powerArr && powerArr.length) ? powerArr[0].text.replace(/,/gi, '') : ''
 
     let powerNum = Number(num)
     console.log(date, powerNum)

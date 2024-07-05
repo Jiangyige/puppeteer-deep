@@ -16,34 +16,19 @@ async function getWebpageData(browser) {
   try {
     const page = await browser.newPage();
     let status = await page.goto('https://www.teld.cn', {timeout: 60 * 3 * 1000});
+    console.log('status!', status);
     await timeout(5000);
 
     console.log('start!');
     let powerArr = await page.evaluate(() => {
-      const title = document.title
-      console.log('title!', title);
-
       let as = [...document.querySelectorAll('.one-info:first-child .middle span:last-of-type:not(.space)')];
-      console.log('as!', as);
-
+  
       return as.map((a) =>{
           return {
             text: a.innerText
           }
       });
     });
-
-
-    // let inputElement = await page.$('.one-info:first-child .middle span:last-of-type:not(.space)', ele => ele.innerText);
-
-    // inputElement = [...inputElement].map((a) => {
-    //   return {
-    //     text: a.innerText
-    //   }
-    // });
-
-    // console.log('inputElement!', inputElement);
-
 
     console.log('powerArr!', powerArr);
 
@@ -159,12 +144,12 @@ puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox']}).then(asyn
   }
 
   // 写入xlsx
-  const subjectText = await writeSheet(powerNum);
-  if (!subjectText) {
-    console.log('写入sheet文件失败')
-    return;
-  }
+  // const subjectText = await writeSheet(powerNum);
+  // if (!subjectText) {
+  //   console.log('写入sheet文件失败')
+  //   return;
+  // }
 
   // 发送邮件
-  await sendEmail(subjectText);
+  // await sendEmail(subjectText);
 });
