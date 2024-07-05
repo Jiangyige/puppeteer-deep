@@ -20,8 +20,10 @@ async function getWebpageData(browser) {
 
     console.log('start!');
     let powerArr = await page.evaluate(() => {
-      let as = [...document.querySelectorAll('.one-info:first-child .middle span:last-of-type:not(.space)')];
+      const title = await page.evaluate('document.title');
+      console.log('title!', title);
 
+      let as = [...document.querySelectorAll('.one-info:first-child .middle span:last-of-type:not(.space)')];
       console.log('as!', as);
 
       return as.map((a) =>{
