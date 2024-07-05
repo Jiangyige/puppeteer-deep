@@ -35,7 +35,7 @@ async function getWebpageData(browser) {
 
     console.log('powerArr!', powerArr);
 
-    const num = powerArr[0].text.replace(/,/gi, '')
+    const num = (powerArr && powerArr.length) ? powerArr[0].text.replace(/,/gi, '') : ''
 
     let powerNum = Number(num)
     console.log(date, powerNum)
