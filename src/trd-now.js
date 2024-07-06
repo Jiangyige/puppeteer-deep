@@ -18,8 +18,8 @@ async function getWebpageData(browser) {
     console.log('browser!', browser);
     const page = await browser.newPage();
     console.log('page!', page);
-    // let status = await page.goto('https://www.teld.cn', { timeout: 60 * 3 * 1000 });
-    let status = await page.goto('https://www.google.com', { timeout: 60 * 3 * 1000 });
+    let status = await page.goto('https://www.teld.cn', { timeout: 60 * 3 * 1000 });
+    // let status = await page.goto('https://www.google.com', { timeout: 60 * 3 * 1000 });
     await timeout(5000);
 
     console.log('status!', status);
@@ -139,7 +139,7 @@ async function sendEmail(subjectText) {
 
 console.log('job schedule', new Date().toLocaleString());
 
-puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox', '--headless']}).then(async browser => {
+puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox']}).then(async browser => {
   date = moment().format("YYYY-MM-DD HH:mm:ss")
   // 抓取充电量
   const powerNum = await getWebpageData(browser);
