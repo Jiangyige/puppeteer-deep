@@ -18,7 +18,8 @@ async function getWebpageData(browser) {
     console.log('browser!', browser);
     const page = await browser.newPage();
     console.log('page!', page);
-    let status = await page.goto('https://www.teld.cn', { timeout: 60 * 3 * 1000 });
+    // let status = await page.goto('https://www.teld.cn', { timeout: 60 * 3 * 1000 });
+    let status = await page.goto('https://www.baidu.com', { timeout: 60 * 3 * 1000 });
     await timeout(5000);
 
     console.log('status!', status);
