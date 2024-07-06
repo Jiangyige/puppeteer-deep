@@ -139,7 +139,7 @@ async function sendEmail(subjectText) {
 
 console.log('job schedule', new Date().toLocaleString());
 
-puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox']}).then(async browser => {
+puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox', '--headless']}).then(async browser => {
   date = moment().format("YYYY-MM-DD HH:mm:ss")
   // 抓取充电量
   const powerNum = await getWebpageData(browser);
