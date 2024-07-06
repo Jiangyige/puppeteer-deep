@@ -14,15 +14,11 @@ let date = '';
 // 抓取充电量
 async function getWebpageData(browser) {
   try {
-
-    console.log('browser!', browser);
     const page = await browser.newPage();
-    console.log('page!', page);
     let status = await page.goto('https://www.teld.cn', { timeout: 60 * 3 * 1000 });
-    // let status = await page.goto('https://www.google.com', { timeout: 60 * 3 * 1000 });
-    await timeout(5000);
+    await page.waitForNetworkIdle();
 
-    console.log('status!', status);
+    console.log('status!', status, status.status(), status.headers());
 
     console.log('start!');
     let powerArr = await page.evaluate(() => {
