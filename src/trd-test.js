@@ -15,9 +15,12 @@ let date = '';
 async function getWebpageData(browser) {
   try {
     const page = await browser.newPage();
-    let status = await page.goto('https://www.teld.cn', {timeout: 60 * 3 * 1000});
-    console.log('status!', status);
-    await timeout(3000);
+    await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/116.0.5845.96 Safari/537.36');
+
+    let status = await page.goto('https://www.teld.cn', { timeout: 60 * 3 * 1000 });
+    await page.waitForNetworkIdle();
+
+    console.log('status!', status, status.status(), status.headers());
 
     console.log('start!');
     let powerArr = await page.evaluate(() => {

@@ -148,12 +148,12 @@ puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox']}).then(asyn
   }
 
   // 写入xlsx
-  // const subjectText = await writeSheet(powerNum);
-  // if (!subjectText) {
-  //   console.log('写入sheet文件失败')
-  //   return;
-  // }
+  const subjectText = await writeSheet(powerNum);
+  if (!subjectText) {
+    console.log('写入sheet文件失败')
+    return;
+  }
 
   // 发送邮件
-  // await sendEmail(subjectText);
+  await sendEmail(subjectText);
 });
