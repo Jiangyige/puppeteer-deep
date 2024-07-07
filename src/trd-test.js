@@ -18,7 +18,8 @@ async function getWebpageData(browser) {
     await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/116.0.5845.96 Safari/537.36');
 
     let status = await page.goto('https://www.teld.cn', { timeout: 60 * 3 * 1000 });
-    await page.waitForNetworkIdle();
+    // await page.waitForNetworkIdle();
+    await timeout(3000);
 
     console.log('status!', status, status.status(), status.headers());
 
