@@ -18,8 +18,8 @@ async function getWebpageData(browser) {
     await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/116.0.5845.96 Safari/537.36');
 
     let status = await page.goto('https://www.teld.cn', { timeout: 60 * 3 * 1000 });
-    // await page.waitForNetworkIdle();
-    await timeout(3000);
+    await page.waitForNetworkIdle();
+    // await timeout(3000);
 
     console.log('status!', status, status.status(), status.headers());
 
@@ -113,7 +113,7 @@ async function sendEmail(subjectText) {
   // 设置邮件内容（谁发送什么给谁）
   let mailOptions = {
       from: 'jiangyige1990@qq.com', // 发件人
-      to: 'jiangyige1990@live.com', // 收件人
+      to: 'jiangyige1990@live.com; jiangyige1990@qq.com', // 收件人
       subject: subjectText, // 主题
       text: 'TRD' + moment().format('YYYY-MM-DD') + '充电量', // plain text body
       html: '<b>详情看附件</b>', // html body
